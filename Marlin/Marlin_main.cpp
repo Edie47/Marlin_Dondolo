@@ -12312,7 +12312,12 @@ inline void gcode_M999() {
     const int16_t angles[2] = SWITCHING_NOZZLE_SERVO_ANGLES;
     planner.synchronize();
     MOVE_SERVO(SWITCHING_NOZZLE_SERVO_NR, angles[e]);
-    safe_delay(500);
+      #ifdef SWITCHING_NOZZLE_SERVO_DELAY
+        safe_delay(SWITCHING_NOZZLE_SERVO_DELAY);
+        servo[SWITCHING_NOZZLE_SERVO_NR].detach();
+      #else
+        safe_delay(500);
+      #endif
   }
 #endif
 
@@ -12667,9 +12672,9 @@ void tool_change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool n
 
           #if ENABLED(SWITCHING_NOZZLE)
             // Always raise by at least 1 to avoid workpiece
-            const float zdiff = hotend_offset[Z_AXIS][active_extruder] - hotend_offset[Z_AXIS][tmp_extruder];
-            current_position[Z_AXIS] += (zdiff > 0.0 ? zdiff : 0.0) + 1;
-            planner.buffer_line_kinematic(current_position, planner.max_feedrate_mm_s[Z_AXIS], active_extruder);
+//            const float zdiff = hotend_offset[Z_AXIS][active_extruder] - hotend_offset[Z_AXIS][tmp_extruder]; // COMMENTED BY STEFAN
+//            current_position[Z_AXIS] += (zdiff > 0.0 ? zdiff : 0.0) + 1;  // COMMENTED BY STEFAN
+//            planner.buffer_line_kinematic(current_position, planner.max_feedrate_mm_s[Z_AXIS], active_extruder);  // COMMENTED BY STEFAN
             move_nozzle_servo(tmp_extruder);
           #endif
 
@@ -12695,7 +12700,7 @@ void tool_change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool n
 
         #if ENABLED(SWITCHING_NOZZLE)
           // The newly-selected extruder Z is actually at...
-          current_position[Z_AXIS] -= zdiff;
+//          current_position[Z_AXIS] -= zdiff; // COMMENTED BY STEFAN
         #endif
 
         // Tell the planner the new "current position"

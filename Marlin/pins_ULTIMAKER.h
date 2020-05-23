@@ -43,7 +43,8 @@
 //
 // Servos
 //
-#define SERVO0_PIN         11
+//#define SERVO0_PIN         11
+#define SERVO0_PIN         47
 
 //
 // Limit Switches
@@ -81,9 +82,12 @@
 #define E0_DIR_PIN         45
 #define E0_ENABLE_PIN      41
 
-#define E1_STEP_PIN        49
-#define E1_DIR_PIN         47
-#define E1_ENABLE_PIN      48
+//#define E1_STEP_PIN        49
+//#define E1_DIR_PIN         47
+//#define E1_ENABLE_PIN      48
+#define E1_STEP_PIN         E0_STEP_PIN
+#define E1_DIR_PIN          E0_DIR_PIN
+#define E1_ENABLE_PIN       E0_ENABLE_PIN
 
 //
 // Temperature Sensors
