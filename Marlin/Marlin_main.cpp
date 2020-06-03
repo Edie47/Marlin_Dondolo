@@ -12668,22 +12668,20 @@ void tool_change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool n
 
         #else // !DUAL_X_CARRIAGE
 
-          set_destination_from_current();
+          no_move = true; // ADDED BY STEFAN to disable all moves after nozzle switch
+          if (!no_move) set_destination_from_current(); // UPDATED BY STEFAN
 
           #if ENABLED(PARKING_EXTRUDER)
             parking_extruder_tool_change(tmp_extruder, no_move);
           #endif
 
-// COMMENTED BY STEFAN
-/*
           #if ENABLED(SWITCHING_NOZZLE)
             // Always raise by at least 1 to avoid workpiece
-            const float zdiff = hotend_offset[Z_AXIS][active_extruder] - hotend_offset[Z_AXIS][tmp_extruder]; 
+            const float zdiff = hotend_offset[Z_AXIS][active_extruder] - hotend_offset[Z_AXIS][tmp_extruder];
             current_position[Z_AXIS] += (zdiff > 0.0 ? zdiff : 0.0) + 1;
-            planner.buffer_line_kinematic(current_position, planner.max_feedrate_mm_s[Z_AXIS], active_extruder); 
+//            planner.buffer_line_kinematic(current_position, planner.max_feedrate_mm_s[Z_AXIS], active_extruder); // COMMENTED BY STEFAN
             move_nozzle_servo(tmp_extruder);
           #endif
-*/
 
           const float xdiff = hotend_offset[X_AXIS][tmp_extruder] - hotend_offset[X_AXIS][active_extruder],
                       ydiff = hotend_offset[Y_AXIS][tmp_extruder] - hotend_offset[Y_AXIS][active_extruder];
@@ -12705,12 +12703,10 @@ void tool_change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool n
 
         #endif // !DUAL_X_CARRIAGE
 
-// COMMENTED BY STEFAN
-/*        #if ENABLED(SWITCHING_NOZZLE)
+        #if ENABLED(SWITCHING_NOZZLE)
           // The newly-selected extruder Z is actually at...
           current_position[Z_AXIS] -= zdiff;
         #endif
-        */
 
         // Tell the planner the new "current position"
         SYNC_PLAN_POSITION_KINEMATIC();
