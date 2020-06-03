@@ -4460,14 +4460,15 @@ inline void gcode_G28(const bool always_home_all) {
     set_bltouch_deployed(false);
   #endif
 
-  // Always home with tool 0 active
+// COMMENTED BY STEFAN
+/*  // Always home with tool 0 active
   #if HOTENDS > 1
     #if DISABLED(DELTA) || ENABLED(DELTA_HOME_TO_SAFE_ZONE)
       const uint8_t old_tool_index = active_extruder;
     #endif
     tool_change(0, 0, true);
   #endif
-
+*/
   #if ENABLED(DUAL_X_CARRIAGE) || ENABLED(DUAL_NOZZLE_DUPLICATION_MODE)
     extruder_duplication_enabled = false;
   #endif
@@ -4611,6 +4612,8 @@ inline void gcode_G28(const bool always_home_all) {
 
   clean_up_after_endstop_or_probe_move();
 
+// COMMENTED BY STEFAN
+/*
   // Restore the active tool after homing
   #if HOTENDS > 1 && (DISABLED(DELTA) || ENABLED(DELTA_HOME_TO_SAFE_ZONE))
     #if ENABLED(PARKING_EXTRUDER)
@@ -4620,6 +4623,7 @@ inline void gcode_G28(const bool always_home_all) {
     #endif
     tool_change(old_tool_index, 0, NO_FETCH);
   #endif
+*/
 
   lcd_refresh();
 
@@ -12670,13 +12674,16 @@ void tool_change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool n
             parking_extruder_tool_change(tmp_extruder, no_move);
           #endif
 
+// COMMENTED BY STEFAN
+/*
           #if ENABLED(SWITCHING_NOZZLE)
             // Always raise by at least 1 to avoid workpiece
-//            const float zdiff = hotend_offset[Z_AXIS][active_extruder] - hotend_offset[Z_AXIS][tmp_extruder]; // COMMENTED BY STEFAN
-//            current_position[Z_AXIS] += (zdiff > 0.0 ? zdiff : 0.0) + 1;  // COMMENTED BY STEFAN
-//            planner.buffer_line_kinematic(current_position, planner.max_feedrate_mm_s[Z_AXIS], active_extruder);  // COMMENTED BY STEFAN
+            const float zdiff = hotend_offset[Z_AXIS][active_extruder] - hotend_offset[Z_AXIS][tmp_extruder]; 
+            current_position[Z_AXIS] += (zdiff > 0.0 ? zdiff : 0.0) + 1;
+            planner.buffer_line_kinematic(current_position, planner.max_feedrate_mm_s[Z_AXIS], active_extruder); 
             move_nozzle_servo(tmp_extruder);
           #endif
+*/
 
           const float xdiff = hotend_offset[X_AXIS][tmp_extruder] - hotend_offset[X_AXIS][active_extruder],
                       ydiff = hotend_offset[Y_AXIS][tmp_extruder] - hotend_offset[Y_AXIS][active_extruder];
@@ -12698,10 +12705,12 @@ void tool_change(const uint8_t tmp_extruder, const float fr_mm_s/*=0.0*/, bool n
 
         #endif // !DUAL_X_CARRIAGE
 
-        #if ENABLED(SWITCHING_NOZZLE)
+// COMMENTED BY STEFAN
+/*        #if ENABLED(SWITCHING_NOZZLE)
           // The newly-selected extruder Z is actually at...
-//          current_position[Z_AXIS] -= zdiff; // COMMENTED BY STEFAN
+          current_position[Z_AXIS] -= zdiff;
         #endif
+        */
 
         // Tell the planner the new "current position"
         SYNC_PLAN_POSITION_KINEMATIC();
